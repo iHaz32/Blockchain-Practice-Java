@@ -61,7 +61,8 @@ public class TransactionBlock {
         if (timestamp == null) {
             throw new TransactionBlockException("Timestamp cannot be null.", timestamp);
         }
-        if (timestamp.after(new Timestamp(System.currentTimeMillis()))) {
+        long now = System.currentTimeMillis();
+        if (timestamp.getTime() > now + 10000) { // Allow a 10-second window for clock differences
             throw new TransactionBlockException("Timestamp cannot be in the future.", timestamp);
         }
         this.timestamp = timestamp;
