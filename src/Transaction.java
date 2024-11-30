@@ -76,7 +76,7 @@ public class Transaction {
      */
     public void setAmount(BigDecimal amount) throws TransactionException {
         // Compare the amount with BigDecimal.ZERO to ensure it's positive
-        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) > 0) {
             this.amount = amount;
         } else {
             // Throw an exception with an appropriate message and offending value
