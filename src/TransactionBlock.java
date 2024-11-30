@@ -79,6 +79,9 @@ public class TransactionBlock {
         if (data == null) {
             throw new TransactionBlockException("Transaction data cannot be null.", data);
         }
+        if (!hash.matches("[a-fA-F0-9]{64}")) { // SHA-256 hash format
+            throw new TransactionBlockException("Invalid hash format.", hash);
+        }
         this.data = data;
     }
 
@@ -93,7 +96,9 @@ public class TransactionBlock {
         if (previousHash == null || previousHash.isEmpty()) {
             throw new TransactionBlockException("Previous hash cannot be null or empty.", previousHash);
         }
-        // Optionally, you could add a validation to ensure the hash is in a valid format (e.g., 64-character hex string for SHA-256)
+        if (!hash.matches("[a-fA-F0-9]{64}")) { // SHA-256 hash format
+            throw new TransactionBlockException("Invalid hash format.", hash);
+        }
         this.previousHash = previousHash;
     }
 
