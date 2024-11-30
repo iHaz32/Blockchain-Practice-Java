@@ -5,8 +5,6 @@ public class Transaction {
     private String receiver;
     private BigDecimal amount;
 
-    public Transaction() {}
-
     public Transaction(String sender, String receiver, BigDecimal amount) throws TransactionException {
         setSender(sender);
         setReceiver(receiver);
