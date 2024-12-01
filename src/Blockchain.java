@@ -1,3 +1,4 @@
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,5 +31,11 @@ public class Blockchain {
 
     public String getName() {
         return this.name;
+    }
+
+    public void addBlock(Transaction transaction) throws BlockException {
+        Block newBlock = new Block(blocks.size(), new Timestamp(System.currentTimeMillis()), transaction, blocks.get(blocks.size() - 1).getHash(), "0000000000000000000000000000000000000000000000000000000000000000");
+        newBlock.setHash(newBlock.calculateHash(), newBlock.getPreviousHash());
+        blocks.add(newBlock);
     }
 }
