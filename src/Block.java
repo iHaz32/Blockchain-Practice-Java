@@ -1,4 +1,8 @@
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Represents a block in a transaction blockchain.
@@ -160,6 +164,72 @@ public class Block {
      */
     public String getHash() {
         return this.hash;
+    }
+
+    /**
+     * Calculates the SHA-256 hash of the block based on its properties.
+     *
+     * @return The calculated hash as a hexadecimal string.
+     */
+    public String calculateHash() {
+        String input = index + timestamp.toString() + data.toString() + previousHash;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error calculating hash", e);
+        }
+    }
+
+    /**
+     * Validates the current block's hash by recalculating it and comparing with the stored hash.
+     *
+     * @return True if the stored hash matches the calculated hash, false otherwise.
+     */
+    public boolean isHashValid() {
+        return hash.equals(calculateHash());
+    }
+
+    /**
+     * Creates the genesis block (the first block in the blockchain).
+     *
+     * @return A new block with predefined properties as the genesis block.
+     * @throws BlockException If any block property fails validation.
+     */
+    public static Block createGenesisBlock() throws BlockException, TransactionException {
+        return new Block(
+                0, // Genesis block index is 0
+                new Timestamp(System.currentTimeMillis()), // Current timestamp
+                new Transaction("Genesis", "Genesis", BigDecimal.ZERO), // Dummy transaction
+                "0000000000000000000000000000000000000000000000000000000000000000", // No previous hash for the genesis block
+                "0000000000000000000000000000000000000000000000000000000000000000" // Temporary hash (will be replaced after calculation)
+        );
+    }
+
+    /**
+     * Checks if this block is equal to another block by comparing all fields.
+     *
+     * @param other The block to compare with.
+     * @return True if all fields match, false otherwise.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof Block otherBlock)) return false;
+        return index == otherBlock.index &&
+                timestamp.equals(otherBlock.timestamp) &&
+                data.equals(otherBlock.data) &&
+                previousHash.equals(otherBlock.previousHash) &&
+                hash.equals(otherBlock.hash);
     }
 
     /**
