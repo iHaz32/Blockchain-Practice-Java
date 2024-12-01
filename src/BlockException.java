@@ -6,27 +6,27 @@
  * @version 1.0
  * @author Charalampos Deligiannakis
  */
-public class TransactionBlockException extends Exception {
+public class BlockException extends Exception {
 
     private Object offendingValue;
 
     /**
-     * Constructs a new TransactionBlockException with the specified message.
+     * Constructs a new BlockException with the specified message.
      *
      * @param message The detail message that describes the error.
      */
-    public TransactionBlockException(String message) {
+    public BlockException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new TransactionBlockException with the specified message and offending value.
+     * Constructs a new BlockException with the specified message and offending value.
      * The offending value provides additional context about the value that caused the exception.
      *
      * @param message The detail message that describes the error.
      * @param offendingValue The value that caused the exception (e.g., an invalid timestamp, hash, etc.).
      */
-    public TransactionBlockException(String message, Object offendingValue) {
+    public BlockException(String message, Object offendingValue) {
         super(message);
         this.offendingValue = offendingValue;
     }
@@ -48,7 +48,7 @@ public class TransactionBlockException extends Exception {
      */
     @Override
     public String toString() {
-        return "TransactionBlockException{" +
+        return "BlockException{" +
                 "message=" + getMessage() +
                 ", offendingValue=" + offendingValue +
                 '}';
