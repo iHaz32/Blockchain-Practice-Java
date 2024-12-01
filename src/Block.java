@@ -2,7 +2,7 @@ import java.sql.Timestamp;
 
 /**
  * Represents a block in a transaction blockchain.
- * A TransactionBlock contains information about a transaction, a timestamp, and hash values,
+ * A Block contains information about a transaction, a timestamp, and hash values,
  * and links to the previous block in the chain.
  * This class validates the integrity of a block by ensuring that the index is non-negative,
  * the timestamp is not in the future, and the transaction data and hashes are valid.
@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * @version 1.0
  * @author Charalampos Deligiannakis
  */
-public class TransactionBlock {
+public class Block {
 
     private int index;
     private Timestamp timestamp;
@@ -19,7 +19,7 @@ public class TransactionBlock {
     private String hash;
 
     /**
-     * Constructs a new TransactionBlock with the specified parameters.
+     * Constructs a new Block with the specified parameters.
      * This constructor validates all inputs before setting the values.
      *
      * @param index The index of the block in the blockchain.
@@ -27,25 +27,25 @@ public class TransactionBlock {
      * @param data The transaction data associated with this block.
      * @param previousHash The hash of the previous block in the blockchain.
      * @param hash The hash of the current block.
-     * @throws TransactionBlockException If any of the input parameters are invalid.
+     * @throws BlockException If any of the input parameters are invalid.
      */
-    public TransactionBlock(int index, Timestamp timestamp, Transaction data, String previousHash, String hash) throws TransactionBlockException {
+    public Block(int index, Timestamp timestamp, Transaction data, String previousHash, String hash) throws BlockException {
         setIndex(index);
         setTimestamp(timestamp);
         setData(data);
         setPreviousHash(previousHash);
-        setHash(hash);
+        setHash(hash, previousHash);
     }
 
     /**
      * Sets the index for this block.
      *
      * @param index The index of the block.
-     * @throws TransactionBlockException If the index is negative.
+     * @throws BlockException If the index is negative.
      */
-    public void setIndex(int index) throws TransactionBlockException {
+    public void setIndex(int index) throws BlockException {
         if (index < 0) {
-            throw new TransactionBlockException("Index cannot be negative.", index);
+            throw new BlockException("Index cannot be negative.", index);
         }
         this.index = index;
     }
@@ -55,15 +55,15 @@ public class TransactionBlock {
      * The timestamp must not be null and must not be in the future.
      *
      * @param timestamp The timestamp of the block.
-     * @throws TransactionBlockException If the timestamp is null or in the future.
+     * @throws BlockException If the timestamp is null or in the future.
      */
-    public void setTimestamp(Timestamp timestamp) throws TransactionBlockException {
+    public void setTimestamp(Timestamp timestamp) throws BlockException {
         if (timestamp == null) {
-            throw new TransactionBlockException("Timestamp cannot be null.", timestamp);
+            throw new BlockException("Timestamp cannot be null.", timestamp);
         }
         long now = System.currentTimeMillis();
         if (timestamp.getTime() > now + 10000) { // Allow a 10-second window for clock differences
-            throw new TransactionBlockException("Timestamp cannot be in the future.", timestamp);
+            throw new BlockException("Timestamp cannot be in the future.", timestamp);
         }
         this.timestamp = timestamp;
     }
@@ -73,14 +73,11 @@ public class TransactionBlock {
      * The transaction data must not be null.
      *
      * @param data The transaction data associated with the block.
-     * @throws TransactionBlockException If the transaction data is null.
+     * @throws BlockException If the transaction data is null.
      */
-    public void setData(Transaction data) throws TransactionBlockException {
+    public void setData(Transaction data) throws BlockException {
         if (data == null) {
-            throw new TransactionBlockException("Transaction data cannot be null.", data);
-        }
-        if (!hash.matches("[a-fA-F0-9]{64}")) { // SHA-256 hash format
-            throw new TransactionBlockException("Invalid hash format.", hash);
+            throw new BlockException("Transaction data cannot be null.", data);
         }
         this.data = data;
     }
@@ -90,30 +87,33 @@ public class TransactionBlock {
      * The previous hash must not be null or empty.
      *
      * @param previousHash The hash of the previous block.
-     * @throws TransactionBlockException If the previous hash is null or empty.
+     * @throws BlockException If the previous hash is null or empty.
      */
-    public void setPreviousHash(String previousHash) throws TransactionBlockException {
+    public void setPreviousHash(String previousHash) throws BlockException {
         if (previousHash == null || previousHash.isEmpty()) {
-            throw new TransactionBlockException("Previous hash cannot be null or empty.", previousHash);
+            throw new BlockException("Previous hash cannot be null or empty.", previousHash);
         }
-        if (!hash.matches("[a-fA-F0-9]{64}")) { // SHA-256 hash format
-            throw new TransactionBlockException("Invalid hash format.", hash);
+        if (!previousHash.matches("[a-fA-F0-9]{64}")) { // SHA-256 hash format
+            throw new BlockException("Invalid hash format.", hash);
         }
         this.previousHash = previousHash;
     }
 
     /**
      * Sets the hash for this block.
-     * The hash must not be null or empty.
+     * The hash must not be null or empty or same with previousHash.
      *
      * @param hash The hash of the current block.
-     * @throws TransactionBlockException If the hash is null or empty.
+     * @param previousHash The previous hash of the current block.
+     * @throws BlockException If the hash is null or empty.
      */
-    public void setHash(String hash) throws TransactionBlockException {
+    public void setHash(String hash, String previousHash) throws BlockException {
         if (hash == null || hash.isEmpty()) {
-            throw new TransactionBlockException("Hash cannot be null or empty.", hash);
+            throw new BlockException("Hash cannot be null or empty.", hash);
         }
-        // Optionally, you could add a validation to ensure the hash is in a valid format (e.g., 64-character hex string for SHA-256)
+        if (hash.equals(previousHash)) {
+            throw new BlockException("Hash cannot be same with previous hash.", hash);
+        }
         this.hash = hash;
     }
 
@@ -163,9 +163,9 @@ public class TransactionBlock {
     }
 
     /**
-     * Returns a string representation of the TransactionBlock object.
+     * Returns a string representation of the Block object.
      *
-     * @return A string representing the TransactionBlock.
+     * @return A string representing the Block.
      */
     @Override
     public String toString() {
