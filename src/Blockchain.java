@@ -34,7 +34,7 @@ public class Blockchain {
     }
 
     public void addBlock(Transaction transaction) throws BlockException {
-        Block newBlock = new Block(blocks.size(), new Timestamp(System.currentTimeMillis()), transaction, blocks.get(blocks.size() - 1).getHash(), "0000000000000000000000000000000000000000000000000000000000000000");
+        Block newBlock = new Block(blocks.size(), new Timestamp(System.currentTimeMillis()), transaction, blocks.getLast().getHash(), "0000000000000000000000000000000000000000000000000000000000000000");
         newBlock.setHash(newBlock.calculateHash(), newBlock.getPreviousHash());
         blocks.add(newBlock);
     }
