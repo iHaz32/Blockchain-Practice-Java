@@ -9,15 +9,17 @@ public class Blockchain {
     private ArrayList<Block> blocks;
     private Set<String> hashes;
 
-    Blockchain() {
+    Blockchain() throws BlockException, TransactionException {
         this.blocks = new ArrayList<>();
         this.hashes = new HashSet<>();
+        blocks.add(Block.createGenesisBlock());
     }
 
-    Blockchain(String name) throws BlockchainException {
+    Blockchain(String name) throws BlockchainException, BlockException, TransactionException {
         setName(name);
         this.blocks = new ArrayList<>();
         this.hashes = new HashSet<>();
+        blocks.add(Block.createGenesisBlock());
     }
 
     public void setName(String name) throws BlockchainException {
