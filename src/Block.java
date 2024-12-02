@@ -206,13 +206,18 @@ public class Block {
      * @throws BlockException If any block property fails validation.
      */
     public static Block createGenesisBlock() throws BlockException, TransactionException {
-        return new Block(
+        Block genesisBlock = new Block(
                 0, // Genesis block index is 0
                 new Timestamp(System.currentTimeMillis()), // Current timestamp
-                new Transaction("Genesis", "Genesis", BigDecimal.ZERO), // Dummy transaction
+                new Transaction("Genesis", "Genesis", BigDecimal.ONE), // Dummy transaction
                 "0000000000000000000000000000000000000000000000000000000000000000", // No previous hash for the genesis block
-                "0000000000000000000000000000000000000000000000000000000000000000" // Temporary hash (will be replaced after calculation)
+                "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo" // Temporary hash (will be replaced after calculation)
         );
+        // Calculate and set the actual hash
+        String calculatedHash = genesisBlock.calculateHash();
+        genesisBlock.setHash(calculatedHash, genesisBlock.getPreviousHash());
+
+        return genesisBlock;
     }
 
     /**
