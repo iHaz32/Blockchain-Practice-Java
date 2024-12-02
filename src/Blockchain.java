@@ -47,6 +47,10 @@ public class Blockchain {
         hashes.add(newHash);
     }
 
+    public ArrayList<Block> getBlocks() {
+        return this.blocks;
+    }
+
     @Override
     public String toString() {
         return "Blockchain{" +
