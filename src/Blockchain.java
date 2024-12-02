@@ -44,4 +44,12 @@ public class Blockchain {
         blocks.add(newBlock);
         hashes.add(newHash);
     }
+
+    @Override
+    public String toString() {
+        return "Blockchain{" +
+                "name=" + name +
+                ", blocks=" + blocks.size() + " blocks" +
+                '}';
+    }
 }
