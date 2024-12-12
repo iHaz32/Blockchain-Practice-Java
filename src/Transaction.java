@@ -1,12 +1,13 @@
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
- * This class represents a transaction between two parties, with a sender, receiver, and an amount.
- * It validates the sender and receiver names (ensuring they meet certain criteria) and ensures
- * the transaction amount is greater than zero. It also includes methods to retrieve the sender,
- * receiver, and amount, as well as a string representation of the transaction.
+ * This class represents a transaction between two parties, with a sender, receiver, amount, and timestamp.
+ * It validates the sender and receiver names (ensuring they meet certain criteria), ensures the transaction
+ * amount is greater than zero, and provides methods to retrieve the sender, receiver, amount, and timestamp.
+ * It also includes methods for setting and getting the timestamp, as well as a string representation of the transaction.
  * <p>
- * Version 1.0
+ * Version 1.1
  * Author: Charalampos Deligiannakis
  */
 public class Transaction {
@@ -20,18 +21,22 @@ public class Transaction {
     // Amount of money involved in the transaction
     private BigDecimal amount;
 
+    // Timestamp of when the transaction was created
+    private Timestamp timestamp;
+
     /**
-     * Constructor that initializes a new Transaction with a sender, receiver, and amount.
+     * Constructor that initializes a new Transaction with a sender, receiver, amount, and timestamp.
      *
      * @param sender   The sender's name (must meet validation criteria).
      * @param receiver The receiver's name (must meet validation criteria).
      * @param amount   The amount of money involved in the transaction (must be greater than zero).
-     * @throws TransactionException If the sender or receiver names are invalid, or the amount is not valid.
+     * @throws TransactionException If the sender or receiver names are invalid, the amount is not valid, or the timestamp is null.
      */
     public Transaction(String sender, String receiver, BigDecimal amount) throws TransactionException {
         setSender(sender);
         setReceiver(receiver);
         setAmount(amount);
+        setTimestamp(new Timestamp(System.currentTimeMillis()));
     }
 
     /**
@@ -76,12 +81,30 @@ public class Transaction {
      */
     public void setAmount(BigDecimal amount) throws TransactionException {
         // Compare the amount with BigDecimal.ZERO to ensure it's positive and not null
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) > 0) {
+        if (amount != null && amount.compareTo(BigDecimal.ZERO) > 0) {
             this.amount = amount;
         } else {
             // Throw an exception with an appropriate message and offending value
             throw new TransactionException("Amount must be greater than zero.", amount);
         }
+    }
+
+    /**
+     * Sets the timestamp for this transaction.
+     * The timestamp must not be null and must not be in the future.
+     *
+     * @param timestamp The timestamp of the transaction.
+     * @throws TransactionException If the timestamp is null or in the future.
+     */
+    public void setTimestamp(Timestamp timestamp) throws TransactionException {
+        if (timestamp == null) {
+            throw new TransactionException("Timestamp cannot be null.", timestamp);
+        }
+        long now = System.currentTimeMillis();
+        if (timestamp.getTime() > now + 10000) { // Allow a 10-second window for clock differences
+            throw new TransactionException("Timestamp cannot be in the future.", timestamp);
+        }
+        this.timestamp = timestamp;
     }
 
     /**
@@ -112,8 +135,17 @@ public class Transaction {
     }
 
     /**
+     * Returns the timestamp of the transaction.
+     *
+     * @return The timestamp of the transaction.
+     */
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    /**
      * Returns a string representation of the transaction.
-     * The string includes the sender, receiver, and amount.
+     * The string includes the sender, receiver, amount, and timestamp.
      *
      * @return A string representation of the transaction.
      */
@@ -123,6 +155,7 @@ public class Transaction {
                 "sender='" + sender + '\'' +
                 ", receiver='" + receiver + '\'' +
                 ", amount=" + amount +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }
