@@ -21,6 +21,7 @@ public class Block {
     private Transaction data;
     private String previousHash;
     private String hash;
+    private boolean showData;
 
     /**
      * Constructs a new Block with the specified parameters.
@@ -30,15 +31,35 @@ public class Block {
      * @param timestamp The timestamp when the block is created.
      * @param data The transaction data associated with this block.
      * @param previousHash The hash of the previous block in the blockchain.
-     * @param hash The hash of the current block.
      * @throws BlockException If any of the input parameters are invalid.
      */
-    public Block(int index, Timestamp timestamp, Transaction data, String previousHash, String hash) throws BlockException {
+    public Block(int index, Timestamp timestamp, Transaction data, String previousHash) throws BlockException {
         setIndex(index);
         setTimestamp(timestamp);
         setData(data);
         setPreviousHash(previousHash);
-        setHash(hash, previousHash);
+        setHash(calculateHash(), previousHash);
+        this.showData = true;
+    }
+
+    /**
+     * Constructs a new Block with the specified parameters.
+     * This constructor validates all inputs before setting the values.
+     *
+     * @param index The index of the block in the blockchain.
+     * @param timestamp The timestamp when the block is created.
+     * @param data The transaction data associated with this block.
+     * @param previousHash The hash of the previous block in the blockchain.
+     * @param showData The block data may be private
+     * @throws BlockException If any of the input parameters are invalid.
+     */
+    public Block(int index, Timestamp timestamp, Transaction data, String previousHash, Boolean showData) throws BlockException {
+        setIndex(index);
+        setTimestamp(timestamp);
+        setData(data);
+        setPreviousHash(previousHash);
+        setHash(calculateHash(), previousHash);
+        this.showData = showData;
     }
 
     /**
@@ -210,8 +231,7 @@ public class Block {
                 0, // Genesis block index is 0
                 new Timestamp(System.currentTimeMillis()), // Current timestamp
                 new Transaction("Genesis", "Genesis", BigDecimal.ONE), // Dummy transaction
-                "0000000000000000000000000000000000000000000000000000000000000000", // No previous hash for the genesis block
-                "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo" // Temporary hash (will be replaced after calculation)
+                "0000000000000000000000000000000000000000000000000000000000000000" // No previous hash for the genesis block
         );
         // Calculate and set the actual hash
         String calculatedHash = genesisBlock.calculateHash();
@@ -247,7 +267,7 @@ public class Block {
         return "Transaction Block{" +
                 "index=" + index +
                 ", timestamp=" + timestamp +
-                ", data=" + data +
+                ", data=" + (showData ? data : "hidden") +
                 ", previousHash='" + previousHash + '\'' +
                 ", hash='" + hash + '\'' +
                 '}';
