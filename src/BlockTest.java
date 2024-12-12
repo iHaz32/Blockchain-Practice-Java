@@ -25,7 +25,7 @@ class BlockTest {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
             // Create a valid Block
-            Block block = new Block(1, timestamp, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824");
+            Block block = new Block(1, timestamp, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", false);
 
             // Assert that the Block is not null and its properties match the expected values
             assertNotNull(block);
@@ -33,7 +33,6 @@ class BlockTest {
             assertEquals(timestamp, block.getTimestamp());
             assertEquals(transaction, block.getData());
             assertEquals("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", block.getPreviousHash());
-            assertEquals("2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", block.getHash());
         } catch (BlockException | TransactionException e) {
             fail("Block creation failed: " + e.getMessage());
         }
@@ -48,7 +47,7 @@ class BlockTest {
         try {
             Transaction transaction = new Transaction("Alice", "John Doe", new BigDecimal(100));
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            new Block(-1, timestamp, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Invalid index
+            new Block(-1, timestamp, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Invalid index
             fail("Block should have thrown exception for negative index.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
@@ -67,7 +66,7 @@ class BlockTest {
     public void testInvalidTimestampNull() {
         try {
             Transaction transaction = new Transaction("Alice", "John Doe", new BigDecimal(100));
-            new Block(1, null, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Null timestamp
+            new Block(1, null, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Null timestamp
             fail("Block should have thrown exception for null timestamp.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
@@ -87,7 +86,7 @@ class BlockTest {
         try {
             Transaction transaction = new Transaction("Alice", "John Doe", new BigDecimal(100));
             Timestamp futureTimestamp = new Timestamp(System.currentTimeMillis() + 100000);
-            new Block(1, futureTimestamp, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Future timestamp
+            new Block(1, futureTimestamp, transaction, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Future timestamp
             fail("Block should have thrown exception for future timestamp.");
         } catch (BlockException e) {
             // Assert that the exception message matches expectations
@@ -106,7 +105,7 @@ class BlockTest {
     public void testInvalidTransactionData() {
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            new Block(1, timestamp, null, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Null transaction data
+            new Block(1, timestamp, null, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Null transaction data
             fail("Block should have thrown exception for null transaction data.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
@@ -124,32 +123,12 @@ class BlockTest {
         try {
             Transaction transaction = new Transaction("Alice", "John Doe", new BigDecimal(100));
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            new Block(1, timestamp, transaction, "i_am_not_a_hash!!", "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Empty previous hash
+            new Block(1, timestamp, transaction, "i_am_not_a_hash!!"); // Empty previous hash
             fail("Block should have thrown exception for empty previous hash.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
             assertEquals("Invalid hash format.", e.getMessage());
             assertEquals(null, e.getOffendingValue());
-        } catch (TransactionException e) {
-            fail("Block creation failed due to invalid Transaction: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Test for an invalid Block with an empty hash.
-     * Verifies that an exception is thrown if the hash is empty or null.
-     */
-    @Test
-    public void testInvalidHash() {
-        try {
-            Transaction transaction = new Transaction("Alice", "John Doe", new BigDecimal(100));
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            new Block(1, timestamp, transaction, "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", "2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"); // Empty hash
-            fail("Block should have thrown exception for empty hash.");
-        } catch (BlockException e) {
-            // Assert that the exception message and offending value match expectations
-            assertEquals("Hash cannot be same with previous hash.", e.getMessage());
-            assertEquals("2af24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", e.getOffendingValue());
         } catch (TransactionException e) {
             fail("Block creation failed due to invalid Transaction: " + e.getMessage());
         }
