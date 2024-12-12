@@ -1,5 +1,4 @@
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 public class Main {
     public static void main(String[] args) throws BlockchainException, BlockException, TransactionException {
@@ -12,6 +11,5 @@ public class Main {
         b.createBlock(transaction2);
 
         System.out.println(b.toString(0, b.getBlocks().size()));
-
     }
 }
