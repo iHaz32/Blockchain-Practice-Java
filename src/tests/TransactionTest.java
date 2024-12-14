@@ -1,3 +1,9 @@
+package tests;
+
+import exceptions.*;
+import models.*;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
@@ -23,9 +29,9 @@ class TransactionTest {
             Transaction transaction = new Transaction("Alice", "John Doe", new BigDecimal(100)); // Valid
             // Assert that the transaction was created correctly
             assertNotNull(transaction);
-            assertEquals("Alice", transaction.getSender());
-            assertEquals("John Doe", transaction.getReceiver());
-            assertEquals(new BigDecimal(100), transaction.getAmount());
+            Assertions.assertEquals("Alice", transaction.getSender());
+            Assertions.assertEquals("John Doe", transaction.getReceiver());
+            Assertions.assertEquals(new BigDecimal(100), transaction.getAmount());
         } catch (TransactionException e) {
             fail("Transaction creation failed: " + e.getMessage());
         }
@@ -43,8 +49,8 @@ class TransactionTest {
             fail("Transaction should have thrown exception for invalid sender.");
         } catch (TransactionException e) {
             // Assert that the correct error message is thrown and the offending value is correct
-            assertEquals("Invalid sender name.", e.getMessage());
-            assertEquals("A123", e.getOffendingValue());
+            Assertions.assertEquals("Invalid sender name.", e.getMessage());
+            Assertions.assertEquals("A123", e.getOffendingValue());
         }
     }
 
@@ -60,8 +66,8 @@ class TransactionTest {
             fail("Transaction should have thrown exception for invalid receiver.");
         } catch (TransactionException e) {
             // Assert that the correct error message is thrown and the offending value is correct
-            assertEquals("Invalid receiver name.", e.getMessage());
-            assertEquals("Belling_ham", e.getOffendingValue());
+            Assertions.assertEquals("Invalid receiver name.", e.getMessage());
+            Assertions.assertEquals("Belling_ham", e.getOffendingValue());
         }
     }
 
@@ -77,8 +83,8 @@ class TransactionTest {
             fail("Transaction should have thrown exception for invalid amount.");
         } catch (TransactionException e) {
             // Assert that the correct error message is thrown and the offending value is correct
-            assertEquals("Amount must be greater than zero.", e.getMessage());
-            assertEquals(new BigDecimal(-50), e.getOffendingValue());
+            Assertions.assertEquals("Amount must be greater than zero.", e.getMessage());
+            Assertions.assertEquals(new BigDecimal(-50), e.getOffendingValue());
         }
     }
 
@@ -94,8 +100,8 @@ class TransactionTest {
             fail("Transaction should have thrown exception for zero amount.");
         } catch (TransactionException e) {
             // Assert that the correct error message is thrown and the offending value is correct
-            assertEquals("Amount must be greater than zero.", e.getMessage());
-            assertEquals(new BigDecimal(0), e.getOffendingValue());
+            Assertions.assertEquals("Amount must be greater than zero.", e.getMessage());
+            Assertions.assertEquals(new BigDecimal(0), e.getOffendingValue());
         }
     }
 }

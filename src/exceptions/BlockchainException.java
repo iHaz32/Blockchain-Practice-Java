@@ -1,5 +1,7 @@
+package exceptions;
+
 /**
- * Custom exception class for handling errors related to Blockchain.
+ * Custom exception class for handling errors related to models.Blockchain.
  * This exception provides information about invalid data within a blockchain,
  * specifically which value caused the exception.
  *

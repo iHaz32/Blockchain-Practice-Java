@@ -1,3 +1,7 @@
+package models;
+
+import exceptions.*;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +27,7 @@ public class Blockchain {
      * @throws BlockException If there is an error creating the genesis block.
      * @throws TransactionException If there is an error with the transaction in the genesis block.
      */
-    Blockchain() throws BlockException, TransactionException {
+    public Blockchain() throws BlockException, TransactionException {
         this.blocks = new ArrayList<>();
         this.hashes = new HashSet<>();
         blocks.add(Block.createGenesisBlock());
@@ -38,7 +42,7 @@ public class Blockchain {
      * @throws BlockException If there is an error creating the genesis block.
      * @throws TransactionException If there is an error with the transaction in the genesis block.
      */
-    Blockchain(String name) throws BlockchainException, BlockException, TransactionException {
+    public Blockchain(String name) throws BlockchainException, BlockException, TransactionException {
         setName(name);
         this.blocks = new ArrayList<>();
         this.hashes = new HashSet<>();

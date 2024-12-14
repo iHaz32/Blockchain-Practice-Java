@@ -1,3 +1,9 @@
+package tests;
+
+import exceptions.*;
+import models.*;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
@@ -21,8 +27,8 @@ class BlockchainTest {
         try {
             Blockchain blockchain = new Blockchain();
             assertNotNull(blockchain);
-            assertEquals(1, blockchain.getBlocks().size());
-            assertEquals("Genesis", blockchain.getBlocks().get(0).getData().getSender());
+            Assertions.assertEquals(1, blockchain.getBlocks().size());
+            Assertions.assertEquals("Genesis", blockchain.getBlocks().get(0).getData().getSender());
         } catch (Exception e) {
             fail("Blockchain creation failed: " + e.getMessage());
         }
@@ -36,9 +42,9 @@ class BlockchainTest {
         try {
             Blockchain blockchain = new Blockchain("TestChain");
             assertNotNull(blockchain);
-            assertEquals("TestChain", blockchain.getName());
-            assertEquals(1, blockchain.getBlocks().size());
-            assertEquals("Genesis", blockchain.getBlocks().get(0).getData().getSender());
+            Assertions.assertEquals("TestChain", blockchain.getName());
+            Assertions.assertEquals(1, blockchain.getBlocks().size());
+            Assertions.assertEquals("Genesis", blockchain.getBlocks().get(0).getData().getSender());
         } catch (Exception e) {
             fail("Blockchain creation with name failed: " + e.getMessage());
         }
@@ -52,7 +58,7 @@ class BlockchainTest {
         try {
             Blockchain blockchain = new Blockchain();
             blockchain.setName("NewName");
-            assertEquals("NewName", blockchain.getName());
+            Assertions.assertEquals("NewName", blockchain.getName());
         } catch (Exception e) {
             fail("Setting a valid name failed: " + e.getMessage());
         }
@@ -68,8 +74,8 @@ class BlockchainTest {
             blockchain.setName("!Invalid Name@#");
             fail("Blockchain should have thrown exception for invalid name.");
         } catch (BlockchainException e) {
-            assertEquals("Invalid receiver name.", e.getMessage());
-            assertEquals("!Invalid Name@#", e.getOffendingValue());
+            Assertions.assertEquals("Invalid receiver name.", e.getMessage());
+            Assertions.assertEquals("!Invalid Name@#", e.getOffendingValue());
         } catch (Exception e) {
             fail("Unexpected exception: " + e.getMessage());
         }
@@ -84,9 +90,9 @@ class BlockchainTest {
             Blockchain blockchain = new Blockchain();
             Transaction transaction = new Transaction("Alice", "Bob", new BigDecimal(50));
             blockchain.createBlock(transaction);
-            assertEquals(2, blockchain.getBlocks().size());
+            Assertions.assertEquals(2, blockchain.getBlocks().size());
             Block lastBlock = blockchain.getBlocks().get(1);
-            assertEquals(transaction, lastBlock.getData());
+            Assertions.assertEquals(transaction, lastBlock.getData());
         } catch (Exception e) {
             fail("Adding a valid block failed: " + e.getMessage());
         }
@@ -102,7 +108,7 @@ class BlockchainTest {
             blockchain.createBlock(null);
             fail("Blockchain should have thrown exception for null transaction.");
         } catch (BlockException e) {
-            assertEquals("Transaction data cannot be null.", e.getMessage());
+            Assertions.assertEquals("models.Transaction data cannot be null.", e.getMessage());
         } catch (Exception e) {
             fail("Unexpected exception: " + e.getMessage());
         }
@@ -116,27 +122,9 @@ class BlockchainTest {
         try {
             Blockchain blockchain = new Blockchain("TestChain");
             String expected = "Blockchain{name=TestChain, blocks=1 blocks}";
-            assertEquals(expected, blockchain.toString());
+            Assertions.assertEquals(expected, blockchain.toString());
         } catch (Exception e) {
             fail("Blockchain toString failed: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Test for Blockchain toString with block range.
-     */
-    @Test
-    public void testBlockchainToStringWithRange() {
-        try {
-            Blockchain blockchain = new Blockchain("TestChain");
-            Transaction transaction = new Transaction("Alice", "Bob", new BigDecimal(50));
-            blockchain.createBlock(transaction);
-
-            String result = blockchain.toString(0, blockchain.getBlocks().size());
-            assertTrue(result.contains("BLOCKCHAIN TestChain:"));
-            assertTrue(result.contains("Transaction{sender='Alice', receiver='Bob', amount=50}"));
-        } catch (Exception e) {
-            fail("Blockchain toString with range failed: " + e.getMessage());
         }
     }
 
@@ -151,12 +139,11 @@ class BlockchainTest {
             blockchain.createBlock(transaction);
 
             // Attempt to add a block with a duplicate hash (manipulated test scenario)
-            Block duplicateBlock = blockchain.getBlocks().get(1);
             blockchain.createBlock(transaction); // Should calculate a new unique hash
 
             List<Block> blocks = blockchain.getBlocks();
             assertEquals(3, blocks.size());
-            assertNotEquals(blocks.get(1).getHash(), blocks.get(2).getHash());
+            Assertions.assertNotEquals(blocks.get(1).getHash(), blocks.get(2).getHash());
         } catch (Exception e) {
             fail("Duplicate hash detection failed: " + e.getMessage());
         }

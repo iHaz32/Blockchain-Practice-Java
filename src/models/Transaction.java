@@ -1,3 +1,7 @@
+package models;
+
+import exceptions.*;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 

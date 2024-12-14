@@ -1,3 +1,7 @@
+package models;
+
+import exceptions.*;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.security.MessageDigest;
@@ -21,7 +25,7 @@ public class Block {
     private Transaction data;
     private String previousHash;
     private String hash;
-    private boolean showData;
+    private final boolean showData;
 
     /**
      * Constructs a new Block with the specified parameters.
@@ -102,7 +106,7 @@ public class Block {
      */
     public void setData(Transaction data) throws BlockException {
         if (data == null) {
-            throw new BlockException("Transaction data cannot be null.", data);
+            throw new BlockException("models.Transaction data cannot be null.", data);
         }
         this.data = data;
     }
@@ -264,7 +268,7 @@ public class Block {
      */
     @Override
     public String toString() {
-        return "Transaction Block{" +
+        return "models.Transaction Block{" +
                 "index=" + index +
                 ", timestamp=" + timestamp +
                 ", data=" + (showData ? data : "hidden") +

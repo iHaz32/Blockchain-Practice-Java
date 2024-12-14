@@ -1,3 +1,9 @@
+package tests;
+
+import exceptions.*;
+import models.*;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
@@ -20,7 +26,7 @@ class BlockTest {
     @Test
     public void testValidTransactionBlock() {
         try {
-            // Create a valid Transaction object
+            // Create a valid models.Transaction object
             Transaction transaction = new Transaction("Alice", "John Doe", new BigDecimal(100));
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -29,10 +35,10 @@ class BlockTest {
 
             // Assert that the Block is not null and its properties match the expected values
             assertNotNull(block);
-            assertEquals(1, block.getIndex());
-            assertEquals(timestamp, block.getTimestamp());
-            assertEquals(transaction, block.getData());
-            assertEquals("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", block.getPreviousHash());
+            Assertions.assertEquals(1, block.getIndex());
+            Assertions.assertEquals(timestamp, block.getTimestamp());
+            Assertions.assertEquals(transaction, block.getData());
+            Assertions.assertEquals("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", block.getPreviousHash());
         } catch (BlockException | TransactionException e) {
             fail("Block creation failed: " + e.getMessage());
         }
@@ -51,10 +57,10 @@ class BlockTest {
             fail("Block should have thrown exception for negative index.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
-            assertEquals("Index cannot be negative.", e.getMessage());
-            assertEquals(-1, e.getOffendingValue());
+            Assertions.assertEquals("Index cannot be negative.", e.getMessage());
+            Assertions.assertEquals(-1, e.getOffendingValue());
         } catch (TransactionException e) {
-            fail("Block creation failed due to invalid Transaction: " + e.getMessage());
+            fail("Block creation failed due to invalid models.Transaction: " + e.getMessage());
         }
     }
 
@@ -70,10 +76,10 @@ class BlockTest {
             fail("Block should have thrown exception for null timestamp.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
-            assertEquals("Timestamp cannot be null.", e.getMessage());
+            Assertions.assertEquals("Timestamp cannot be null.", e.getMessage());
             assertNull(e.getOffendingValue());
         } catch (TransactionException e) {
-            fail("Block creation failed due to invalid Transaction: " + e.getMessage());
+            fail("Block creation failed due to invalid models.Transaction: " + e.getMessage());
         }
     }
 
@@ -90,10 +96,10 @@ class BlockTest {
             fail("Block should have thrown exception for future timestamp.");
         } catch (BlockException e) {
             // Assert that the exception message matches expectations
-            assertEquals("Timestamp cannot be in the future.", e.getMessage());
-            assertEquals("BlockException", e.getClass().getSimpleName());
+            Assertions.assertEquals("Timestamp cannot be in the future.", e.getMessage());
+            Assertions.assertEquals("BlockException", e.getClass().getSimpleName());
         } catch (TransactionException e) {
-            fail("Block creation failed due to invalid Transaction: " + e.getMessage());
+            fail("Block creation failed due to invalid models.Transaction: " + e.getMessage());
         }
     }
 
@@ -109,7 +115,7 @@ class BlockTest {
             fail("Block should have thrown exception for null transaction data.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
-            assertEquals("Transaction data cannot be null.", e.getMessage());
+            Assertions.assertEquals("models.Transaction data cannot be null.", e.getMessage());
             assertNull(e.getOffendingValue());
         }
     }
@@ -127,10 +133,10 @@ class BlockTest {
             fail("Block should have thrown exception for empty previous hash.");
         } catch (BlockException e) {
             // Assert that the exception message and offending value match expectations
-            assertEquals("Invalid hash format.", e.getMessage());
-            assertEquals(null, e.getOffendingValue());
+            Assertions.assertEquals("Invalid hash format.", e.getMessage());
+            Assertions.assertEquals(null, e.getOffendingValue());
         } catch (TransactionException e) {
-            fail("Block creation failed due to invalid Transaction: " + e.getMessage());
+            fail("Block creation failed due to invalid models.Transaction: " + e.getMessage());
         }
     }
 }

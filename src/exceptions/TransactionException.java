@@ -1,5 +1,7 @@
+package exceptions;
+
 /**
- * Custom exception class used for handling errors related to users.
+ * Custom exception class used for handling errors related to transactions.
  * This exception captures the error message and an optional "offending value"
  * (the value that caused the exception). It provides mechanisms for retrieving
  * both pieces of information.
@@ -7,28 +9,28 @@
  * Version 1.0
  * Author: Charalampos Deligiannakis
  */
-public class UserException extends Exception {
+public class TransactionException extends Exception {
 
     // The value that caused the exception (can be any object type)
     private Object offendingValue;
 
     /**
-     * Constructor to create a new UserException with just an error message.
+     * Constructor to create a new TransactionException with just an error message.
      *
      * @param message The error message explaining what went wrong.
      */
-    public UserException(String message) {
+    public TransactionException(String message) {
         super(message);
     }
 
     /**
-     * Constructor to create a new UserException with an error message
+     * Constructor to create a new TransactionException with an error message
      * and an offending value (the value that caused the issue).
      *
      * @param message         The error message explaining what went wrong.
      * @param offendingValue  The value that caused the exception.
      */
-    public UserException(String message, Object offendingValue) {
+    public TransactionException(String message, Object offendingValue) {
         super(message);
         this.offendingValue = offendingValue;
     }
@@ -50,7 +52,7 @@ public class UserException extends Exception {
      */
     @Override
     public String toString() {
-        return "UserException{" +
+        return "TransactionException{" +
                 "message=" + getMessage() +
                 ", offendingValue=" + offendingValue +
                 '}';

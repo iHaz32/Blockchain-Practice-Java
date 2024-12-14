@@ -1,5 +1,7 @@
+package exceptions;
+
 /**
- * Custom exception class for handling errors related to Transaction Blocks.
+ * Custom exception class for handling errors related to models.Transaction Blocks.
  * This exception provides information about invalid data within a transaction block,
  * specifically which value caused the exception.
  *
